@@ -1,6 +1,7 @@
 package org.example.expert.domain.comment.service;
 
 import org.example.expert.domain.comment.dto.request.CommentSaveRequest;
+import org.example.expert.domain.comment.dto.response.CommentResponse;
 import org.example.expert.domain.comment.dto.response.CommentSaveResponse;
 import org.example.expert.domain.comment.entity.Comment;
 import org.example.expert.domain.comment.repository.CommentRepository;
@@ -15,7 +16,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,9 +47,7 @@ class CommentServiceTest {
         given(todoRepository.findById(anyLong())).willReturn(Optional.empty());
 
         // when
-        InvalidRequestException exception = assertThrows(InvalidRequestException.class, () -> {
-            commentService.saveComment(authUser, todoId, request);
-        });
+        InvalidRequestException exception = assertThrows(InvalidRequestException.class, () -> commentService.saveComment(authUser, todoId, request));
 
         // then
         assertEquals("Todo not found", exception.getMessage());
@@ -71,5 +72,27 @@ class CommentServiceTest {
 
         // then
         assertNotNull(result);
+    }
+
+    @SuppressWarnings("NonAsciiCharacters")
+    @Test
+    void comment_목록_조회에_성공한다() {
+        // given
+        long todoId = 1L;
+        AuthUser authUser = new AuthUser(1L, "email", UserRole.USER);
+        User user = User.fromAuthUser(authUser);
+        Todo todo = new Todo("title", "title", "contents", user);
+        Comment comment = new Comment("contents", user, todo);
+        ReflectionTestUtils.setField(comment, "id", 1L);
+
+        given(commentRepository.findByTodoIdWithUser(todoId)).willReturn(List.of(comment));
+
+        // when
+        List<CommentResponse> result = commentService.getComments(todoId);
+
+        // then
+        assertEquals(1, result.size());
+        assertEquals(comment.getContents(), result.get(0).getContents());
+        assertEquals(user.getEmail(), result.get(0).getUser().getEmail());
     }
 }
