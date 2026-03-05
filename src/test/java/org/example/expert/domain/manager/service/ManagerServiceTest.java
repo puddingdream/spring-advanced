@@ -38,8 +38,9 @@ class ManagerServiceTest {
     @InjectMocks
     private ManagerService managerService;
 
+    @SuppressWarnings("NonAsciiCharacters")
     @Test
-    public void manager_목록_조회_시_Todo가_없다면_InvalidRequestException_에러를_던진다() {
+    void manager_목록_조회_시_Todo가_없다면_InvalidRequestException_에러를_던진다() {
         // given
         long todoId = 1L;
         given(todoRepository.findById(todoId)).willReturn(Optional.empty());
@@ -49,6 +50,7 @@ class ManagerServiceTest {
         assertEquals("Todo not found", exception.getMessage());
     }
 
+    @SuppressWarnings("NonAsciiCharacters")
     @Test
     void todo의_user가_null인_경우_예외가_발생한다() {
         // given
@@ -71,8 +73,9 @@ class ManagerServiceTest {
         assertEquals("일정을 생성한 유저만 담당자를 지정할 수 있습니다.", exception.getMessage());
     }
 
+    @SuppressWarnings("NonAsciiCharacters")
     @Test // 테스트코드 샘플
-    public void manager_목록_조회에_성공한다() {
+  void manager_목록_조회에_성공한다() {
         // given
         long todoId = 1L;
         User user = new User("user1@example.com", "password", UserRole.USER);
@@ -94,6 +97,7 @@ class ManagerServiceTest {
         assertEquals(mockManager.getUser().getEmail(), managerResponses.get(0).getUser().getEmail());
     }
 
+    @SuppressWarnings("NonAsciiCharacters")
     @Test // 테스트코드 샘플
     void todo가_정상적으로_등록된다() {
         // given
