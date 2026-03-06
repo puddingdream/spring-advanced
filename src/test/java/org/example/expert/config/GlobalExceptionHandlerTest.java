@@ -4,12 +4,18 @@ import org.example.expert.domain.auth.exception.AuthException;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.common.exception.ServerException;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.BDDMockito.given;
 
 class GlobalExceptionHandlerTest {
 
@@ -62,5 +68,24 @@ class GlobalExceptionHandlerTest {
         assertEquals("BAD_REQUEST", response.getBody().get("status"));
         assertEquals(400, response.getBody().get("code"));
         assertEquals("message", response.getBody().get("message"));
+    }
+
+    @SuppressWarnings("NonAsciiCharacters")
+    @Test
+    void validation_exception을_400으로_변환한다() {
+        // given
+        MethodArgumentNotValidException exception = Mockito.mock(MethodArgumentNotValidException.class);
+        BindingResult bindingResult = Mockito.mock(BindingResult.class);
+        given(exception.getBindingResult()).willReturn(bindingResult);
+        given(bindingResult.getFieldErrors()).willReturn(List.of(
+                new FieldError("signupRequest", "password", "비밀번호 형식 오류")
+        ));
+
+        // when
+        ResponseEntity<Map<String, Object>> response = handler.handleMethodArgumentNotValidException(exception);
+
+        // then
+        assertEquals(400, response.getStatusCode().value());
+        assertEquals("비밀번호 형식 오류", response.getBody().get("message"));
     }
 }

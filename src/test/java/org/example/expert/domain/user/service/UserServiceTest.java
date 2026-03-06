@@ -17,7 +17,10 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.never;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -90,6 +93,7 @@ class UserServiceTest {
 
         // then
         assertEquals("새 비밀번호는 기존 비밀번호와 같을 수 없습니다.", exception.getMessage());
+        then(passwordEncoder).should(never()).encode(anyString());
     }
 
     @SuppressWarnings("NonAsciiCharacters")
@@ -109,6 +113,7 @@ class UserServiceTest {
 
         // then
         assertEquals("잘못된 비밀번호입니다.", exception.getMessage());
+        then(passwordEncoder).should(never()).encode(anyString());
     }
 
     @SuppressWarnings("NonAsciiCharacters")
@@ -129,5 +134,6 @@ class UserServiceTest {
 
         // then
         assertEquals("encoded-new-password", user.getPassword());
+        then(passwordEncoder).should().encode(request.getNewPassword());
     }
 }
