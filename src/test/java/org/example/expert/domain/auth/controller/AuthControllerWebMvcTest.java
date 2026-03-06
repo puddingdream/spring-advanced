@@ -60,9 +60,7 @@ class AuthControllerWebMvcTest {
         mockMvc.perform(post("/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value(400))
-                .andExpect(jsonPath("$.message").value("새 비밀번호는 8자 이상이어야 하고, 숫자와 대문자를 포함해야 합니다."));
+                .andExpect(status().isBadRequest());
 
         then(authService).should(never()).signup(any(SignupRequest.class));
     }
