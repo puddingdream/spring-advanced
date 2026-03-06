@@ -568,18 +568,12 @@ Page<Todo> findAllByOrderByModifiedAtDesc(Pageable pageable);
 
 과제 요구사항상 커버리지 이미지를 README에 첨부할 수 있도록 영역을 분리했습니다.
 
-현재 업로드된 저장소에는 커버리지 이미지 파일이 포함되어 있지 않으므로,  
-IntelliJ의 **Run with Coverage** 결과를 캡처한 뒤 아래 위치에 추가하면 됩니다.
 
-```text
-예시 경로
-docs/images/coverage.png
-```
 
-```md
-<!-- 예시 -->
-![스크린샷 2026-03-06 091815.png](../../../../Users/edcrf/Downloads/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202026-03-06%20091815.png)
-```
+
+
+<img width="877" height="378" alt="스크린샷 2026-03-06 091815" src="https://github.com/user-attachments/assets/44e58c98-9ade-41f3-abf7-32b992e0434b" />
+
 
 ---
 
