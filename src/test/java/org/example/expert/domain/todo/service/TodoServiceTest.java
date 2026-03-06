@@ -67,6 +67,7 @@ class TodoServiceTest {
         // given
         User user = UserFixture.createUserWithId(1L);
         Todo todo = TodoFixture.createTodoWithTimestamps(1L, user);
+        // PageImpl: Spring Data Page 인터페이스의 테스트용 구현체
         Page<Todo> page = new PageImpl<>(List.of(todo));
         given(todoRepository.findAllByOrderByModifiedAtDesc(any(Pageable.class))).willReturn(page);
 

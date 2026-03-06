@@ -35,6 +35,7 @@ class WeatherClientTest {
         String today = LocalDate.now().format(DateTimeFormatter.ofPattern("MM-dd"));
         WeatherDto[] body = {new WeatherDto(today, "맑음")};
         given(builder.build()).willReturn(restTemplate);
+        // any(URI), eq(WeatherDto[].class): RestTemplate 호출 시 URI는 내부 생성값이므로 타입만 검증
         given(restTemplate.getForEntity(any(java.net.URI.class), eq(WeatherDto[].class)))
                 .willReturn(new ResponseEntity<>(body, HttpStatus.OK));
         WeatherClient weatherClient = new WeatherClient(builder);

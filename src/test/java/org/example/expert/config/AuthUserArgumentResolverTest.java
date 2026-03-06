@@ -35,6 +35,7 @@ class AuthUserArgumentResolverTest {
     @Test
     void supports_parameter는_auth와_auth_user_조합이면_true를_반환한다() throws NoSuchMethodException {
         // given
+        // MethodParameter: 컨트롤러 파라미터 메타데이터(타입/어노테이션)를 런타임에 다루는 객체
         MethodParameter parameter = new MethodParameter(
                 SampleController.class.getMethod("valid", AuthUser.class), 0
         );
@@ -81,6 +82,7 @@ class AuthUserArgumentResolverTest {
     void resolve_argument는_request_attribute로부터_auth_user를_생성한다() {
         // given
         HttpServletRequest request = new MockHttpServletRequest();
+        // 실제 JwtFilter가 넣어주는 attribute 키와 동일하게 세팅해야 resolver 로직을 그대로 검증할 수 있다.
         request.setAttribute("userId", 1L);
         request.setAttribute("email", "user@example.com");
         request.setAttribute("userRole", "USER");

@@ -61,6 +61,7 @@ class ManagerServiceAdditionalTest {
     void 담당자_등록_중_todo_작성자와_요청자가_다르면_에러가_발생한다() {
         // given
         AuthUser authUser = new AuthUser(1L, "requester@example.com", UserRole.USER);
+        // 요청자 id=1, todo 작성자 id=2로 만들어 nullSafeEquals false 분기를 명확히 검증한다.
         User todoOwner = UserFixture.createUserWithId(2L);
         Todo todo = TodoFixture.createTodoWithId(1L, todoOwner);
         given(todoRepository.findById(1L)).willReturn(Optional.of(todo));
@@ -186,6 +187,7 @@ class ManagerServiceAdditionalTest {
     void 담당자_삭제_중_다른_todo의_manager이면_에러가_발생한다() {
         // given
         User owner = UserFixture.createUserWithId(1L);
+        // manager가 참조하는 todo id를 다르게 만들어 "해당 일정에 등록된 담당자" 검증 분기를 탄다.
         Todo todo = TodoFixture.createTodoWithId(1L, owner);
         Todo otherTodo = TodoFixture.createTodoWithId(2L, owner);
         Manager manager = ManagerFixture.createManagerWithId(1L, owner, otherTodo);

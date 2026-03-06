@@ -29,6 +29,7 @@ class JwtFilterTest {
     private FilterChain filterChain;
 
     private JwtFilter createFilter() {
+        // JwtFilter는 ObjectMapper가 필요하므로 실제 인스턴스를 넣어 응답 JSON까지 검증한다.
         return new JwtFilter(jwtUtil, new ObjectMapper());
     }
 
@@ -71,7 +72,9 @@ class JwtFilterTest {
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/todos");
         request.addHeader("Authorization", "Bearer token");
         MockHttpServletResponse response = new MockHttpServletResponse();
+        // 1) Bearer 접두어 제거 성공
         given(jwtUtil.substringToken(anyString())).willReturn("token");
+        // 2) claims 추출 실패(null) 분기로 유도
         given(jwtUtil.extractClaims("token")).willReturn(null);
 
         // when
@@ -89,6 +92,7 @@ class JwtFilterTest {
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/admin/users/1");
         request.addHeader("Authorization", "Bearer token");
         MockHttpServletResponse response = new MockHttpServletResponse();
+        // /admin 경로 + USER 권한 조합이면 403 분기를 탄다.
         Claims claims = org.mockito.Mockito.mock(Claims.class);
         given(claims.get("userRole", String.class)).willReturn("USER");
         given(claims.getSubject()).willReturn("1");
@@ -113,6 +117,7 @@ class JwtFilterTest {
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/todos");
         request.addHeader("Authorization", "Bearer token");
         MockHttpServletResponse response = new MockHttpServletResponse();
+        // admin 경로가 아닌 일반 경로에서는 권한과 무관하게 통과해야 한다.
         Claims claims = org.mockito.Mockito.mock(Claims.class);
         given(claims.get("userRole", String.class)).willReturn("ADMIN");
         given(claims.getSubject()).willReturn("1");
@@ -139,6 +144,7 @@ class JwtFilterTest {
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/admin/comments/1");
         request.addHeader("Authorization", "Bearer token");
         MockHttpServletResponse response = new MockHttpServletResponse();
+        // /admin 경로 + ADMIN 권한이면 통과해야 한다.
         Claims claims = org.mockito.Mockito.mock(Claims.class);
         given(claims.get("userRole", String.class)).willReturn("ADMIN");
         given(claims.getSubject()).willReturn("1");

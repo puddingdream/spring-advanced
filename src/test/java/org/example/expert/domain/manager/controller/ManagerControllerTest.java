@@ -72,6 +72,7 @@ class ManagerControllerTest {
     @Test
     void manager_삭제_요청_시_토큰에서_user_id를_추출해_서비스를_호출한다() {
         // given
+        // Claims는 JwtUtil.extractClaims 반환 타입이라 mock으로 subject(userId)만 제어한다.
         Claims claims = org.mockito.Mockito.mock(Claims.class);
         given(jwtUtil.extractClaims(anyString())).willReturn(claims);
         given(claims.getSubject()).willReturn("1");

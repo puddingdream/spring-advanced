@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CommonDomainTest {
 
+    // Timestamped는 추상 클래스라 테스트용 자식 클래스를 하나 만들어 getter를 검증한다.
     private static class TimestampedTestEntity extends Timestamped {
     }
 
@@ -89,6 +90,7 @@ class CommonDomainTest {
         TimestampedTestEntity entity = new TimestampedTestEntity();
         LocalDateTime createdAt = LocalDateTime.now().minusDays(1);
         LocalDateTime modifiedAt = LocalDateTime.now();
+        // JPA auditing 필드는 private이라 테스트에서 ReflectionTestUtils로 값 주입
         ReflectionTestUtils.setField(entity, "createdAt", createdAt);
         ReflectionTestUtils.setField(entity, "modifiedAt", modifiedAt);
 

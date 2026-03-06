@@ -21,7 +21,9 @@ class JwtUtilTest {
     @BeforeEach
     void setUp() {
         jwtUtil = new JwtUtil();
+        // JwtUtil.init()은 Base64 인코딩된 secretKey를 기대하므로 테스트에서도 동일하게 맞춘다.
         String secret = Base64.getEncoder().encodeToString("01234567890123456789012345678901".getBytes());
+        // ReflectionTestUtils: private 필드(secretKey) 주입용 테스트 유틸
         ReflectionTestUtils.setField(jwtUtil, "secretKey", secret);
         jwtUtil.init();
     }
@@ -36,6 +38,7 @@ class JwtUtilTest {
 
         // when
         String token = jwtUtil.createToken(userId, email, role);
+        // substringToken: "Bearer " 접두어 제거
         Claims claims = jwtUtil.extractClaims(jwtUtil.substringToken(token));
 
         // then

@@ -14,6 +14,9 @@ import static org.mockito.BDDMockito.given;
 
 class AdminLogCheckAspectTest {
 
+    // 참고: 이 테스트는 private 메서드 직접 호출 대신
+    // logAdminApi 진입만으로 extractRequestBody/toJson 분기를 간접 커버한다.
+
     @SuppressWarnings("NonAsciiCharacters")
     @Test
     void aop_성공_시_응답을_그대로_반환한다() throws Throwable {
@@ -58,6 +61,7 @@ class AdminLogCheckAspectTest {
     @Test
     void json_직렬화_실패_상황에서도_aop는_동작한다() throws Throwable {
         // given
+        // ObjectMapper 실패를 강제로 만들어 fallback 로그 분기를 검증한다.
         ObjectMapper objectMapper = Mockito.mock(ObjectMapper.class);
         given(objectMapper.writeValueAsString(Mockito.any())).willThrow(new JsonProcessingException("fail") {
         });
@@ -124,6 +128,7 @@ class AdminLogCheckAspectTest {
         AdminLogCheckAspect aspect = new AdminLogCheckAspect(objectMapper);
         ProceedingJoinPoint joinPoint = Mockito.mock(ProceedingJoinPoint.class);
         Signature signature = Mockito.mock(Signature.class);
+        // 첫 인자가 null일 때 continue 이후 다음 인자를 처리하는 흐름을 검증한다.
         given(joinPoint.getArgs()).willReturn(new Object[]{null, new Object()});
         given(joinPoint.getSignature()).willReturn(signature);
         given(signature.toShortString()).willReturn("AdminController.method()");
